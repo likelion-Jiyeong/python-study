@@ -1,3 +1,5 @@
+import inspect, promotions
+from typing import Any
 from collections import namedtuple
 
 Customer = namedtuple('Customer', 'name fidelity')
@@ -59,3 +61,22 @@ cart = [LineItem('banana', 4, 5),
         LineItem('watermellon', 5, 5.0)]
 print(Order(joe, cart, fidelity_promo))
 # fidelity_promo가 함수인데 callable 형태로 호출하지 않은것은 이해가 안됨..
+
+# promos = [globals()[name] for name in globals()
+#           if name.endswith('_promo') and name != 'best_promo']
+promos = [func for name, func in inspect.getmembers(promotions, inspect.isfunction)]
+
+def best_promo(order):
+    return max(promo(order) for promo in promos)
+
+
+# 명령
+class MacroCommand:
+    
+    def __init__(self, commands) -> None:
+        self.commands = list(commands)
+
+    def __call__(self) -> Any:
+        for command in self.commands:
+            command()
+
