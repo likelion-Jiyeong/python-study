@@ -51,3 +51,31 @@ fish = Fish()
 get_sound(duck)
 get_sound(dog)
 # get_sound(fish) # AttributeError
+
+# vector를 해시상태로 만들기
+from array import array
+import reprlib
+import math
+import functools
+import operator
+
+class Vector:
+    typecode = 'd'
+
+    def __eq__(self, __o: object) -> bool:
+        return tuple(self) == tuple(__o)
+
+    def __hash__(self) -> int:
+        hashes = (hash(x) for x in self._components)
+        hashes = map(hash, self._conponents) # 다음과 같이 간단하게 사용할 수 있다.
+        return functools.reduce(operator.xor, hashes, 0)
+
+"""
+
+map 활용 
+map(int, list): list의 모든 요소를 int로 변환시켜줌
+모든 반복가능한 객체를 활용할 수 있음
+
+zip 활용
+list(zip(range(3), 'ABC')) -> [(0, 'A'), (1, 'B'), (2, 'C')]
+"""
