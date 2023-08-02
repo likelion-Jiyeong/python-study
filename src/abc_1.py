@@ -17,3 +17,60 @@ class BaseClass:
     def func2(self):
         pass
 
+class Tombola(abc.ABC):
+    @abc.abstractclassmethod
+    def load(self, iterable):
+        pass
+
+    @abc.abstractclassmethod
+    def pick(self):
+        pass
+
+    def loaded(self):
+        return bool(self.inspect())
+
+    def inspect(self):
+        items = []
+        while True:
+            try:
+                items.append(self.pick())
+            except LookupError:
+                break
+        self.load(items)
+        return tuple(sorted(items))
+
+"""
+abc 모듈을 사용할 때는 abc.ABC 와 같이 기존 있는 라이브러리를 상속받는것이 가장 좋다.
+abc 모듈은 @abstractclassmethod, @abstractstaticmethod, @abstractproperty 등이 있지만 
+파이썬 3.3 이후 중단되었다.
+대신 아래와 같이 사용한다.
+다만 이 때 @abc.abstractmethod가 가장 안쪽 데커레이터가 되어야한다.
+"""
+class MyABC(abc.ABC):
+    @classmethod
+    @abc.abstractmethod
+    def an_abstract_classmethod(cls):
+        pass
+
+
+import random
+
+class BingoCage(Tombola):
+    
+    def __init__(self, items) -> None:
+        self._randomizer = random.SystemRandom()
+        self._items = []
+        self.load(items)
+
+    def load(self, items):
+        self._items.extend(items)
+        self._randomizer.shuffle(self._items)
+
+    def pick(self):
+        try:
+            return self._items.pop()
+        except IndexError:
+            raise LookupError('pick from empty BingoCage')
+    
+    def __call__(self):
+        self.pick()
