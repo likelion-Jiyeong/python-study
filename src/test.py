@@ -75,3 +75,23 @@ def is_palindrome(word:str) -> bool:
 words = ["racecar", "rotor", "tomato", "별똥별", "코끼리"]
 for word in words:
     print(f"Is '{word}' palindrome?  {is_palindrome(word)}")
+
+import heapq
+
+heap = []
+heapq.heappush(heap, 50)
+heapq.heappush(heap, 10)
+heapq.heappush(heap, 100)
+
+print(f"heap >> {heap}")
+
+removed_value = heapq.heappop(heap)
+
+nums = [4, 1, 7, 3, 8, 5]
+heap = []
+
+for num in nums:
+    heapq.heappush(heap, (-num, num))
+
+while heap:
+    print(heapq.heappop(heap)[1])
